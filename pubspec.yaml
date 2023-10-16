@@ -3,6 +3,14 @@ description: A drop down date picker
 version: 0.0.1
 repository: https://github.com/bruc3balo/drop_down_date_picker.git
 
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  windows:
+  web:
+
 environment:
   sdk: '>=3.0.6 <4.0.0'
   flutter: ">=1.17.0"
