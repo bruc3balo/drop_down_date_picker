@@ -19,6 +19,8 @@ enum DaysOfWeek {
 
   final int number;
 
+  String get dayName => name[0].toUpperCase() + name.substring(1).toLowerCase();
+
   static DaysOfWeek? findByNumber(int n) {
     return DaysOfWeek.values.where((e) => e.number == n).firstOrNull;
   }
@@ -42,6 +44,9 @@ enum MonthsOfYear {
   const MonthsOfYear({required this.number});
 
   final int number;
+
+  String get monthName =>
+      name[0].toUpperCase() + name.substring(1).toLowerCase();
 
   static MonthsOfYear? findByNumber(int n) {
     return MonthsOfYear.values.where((e) => e.number == n).firstOrNull;
@@ -76,10 +81,13 @@ int getNoOfDaysInMonth({required int year, required int month}) =>
     getLastDayOfMonth(year: year, month: month);
 
 ///Get the list of days in [getLastDayOfMonth]
-List<int> days({required int lastDayOfMonth}) => List.generate(
-      lastDayOfMonth,
-      (index) => index + 1,
-    );
+List<T> limitList<T>({
+  required int size,
+  required List<T> originalList,
+}) =>
+    originalList.sublist(0, size - 1);
+
+List<int> fullDays() => List.generate(31, (index) => index + 1);
 
 ///Get all [MonthsOfYear] in a year
 List<MonthsOfYear> get getAllMonths => MonthsOfYear.values;
@@ -93,6 +101,7 @@ List<DropdownMenuItem<T>> getItems<T>({
         .map(
           (e) => DropdownMenuItem<T>(
             value: e,
+            alignment: Alignment.center,
             child: Text(label(e)),
           ),
         )
@@ -142,24 +151,24 @@ void onChangeDate({
 
 class SpinnerDatePicker extends StatefulWidget {
   SpinnerDatePicker({
-    required this.constraints,
     required this.onDateChanged,
     required this.dateOptions,
     this.maxYear,
     this.minYear,
+    this.dayText,
     this.textStyle = itemStyle,
     this.borderRadius = itemBorderRadius,
     DateTime? initialDate,
     super.key,
   }) : initialDate = initialDate ?? DateTime.now();
 
-  final BoxConstraints constraints;
   final List<DateOptions> dateOptions;
   final DateTime initialDate;
   final TextStyle textStyle;
   final BorderRadius borderRadius;
   final int? minYear;
   final int? maxYear;
+  final Widget Function(String)? dayText;
   final void Function(DateTime) onDateChanged;
 
   @override
@@ -183,45 +192,68 @@ class _SpinnerDatePickerState extends State<SpinnerDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: widget.constraints,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: widget.dateOptions
-            .map(
-              (e) => switch (e) {
-                DateOptions.d => _DayPicker(
-                    dateStreamController: _dateStreamController,
-                    initialDate: widget.initialDate,
-                    textStyle: widget.textStyle,
-                    borderRadius: widget.borderRadius,
+    return Column(
+      children: [
+        Visibility(
+          visible: widget.dayText != null,
+          child: StreamBuilder(
+            initialData: widget.initialDate,
+            stream: _dateStreamController.stream,
+            builder: (c, sb) {
+              DateTime date = sb.requireData;
+              DaysOfWeek dayOfWeek = DaysOfWeek.findByNumber(date.weekday)!;
+
+              return widget.dayText?.call(dayOfWeek.dayName) ??
+                  const SizedBox.shrink();
+            },
+          ),
+        ),
+        Flex(
+          direction: Axis.horizontal,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: widget.dateOptions
+              .map(
+                (e) => Expanded(
+                  flex: 1,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: switch (e) {
+                      DateOptions.d => _DayPicker(
+                          dateStreamController: _dateStreamController,
+                          initialDate: widget.initialDate,
+                          textStyle: widget.textStyle,
+                          borderRadius: widget.borderRadius,
+                        ),
+                      DateOptions.m => _MonthPicker(
+                          dateStreamController: _dateStreamController,
+                          initialDate: widget.initialDate,
+                          textStyle: widget.textStyle,
+                          borderRadius: widget.borderRadius,
+                        ),
+                      DateOptions.y => _YearPicker(
+                          dateStreamController: _dateStreamController,
+                          initialDate: widget.initialDate,
+                          textStyle: widget.textStyle,
+                          borderRadius: widget.borderRadius,
+                          minYear: widget.minYear,
+                          maxYear: widget.maxYear,
+                        ),
+                    },
                   ),
-                DateOptions.m => _MonthPicker(
-                    dateStreamController: _dateStreamController,
-                    initialDate: widget.initialDate,
-                    textStyle: widget.textStyle,
-                    borderRadius: widget.borderRadius,
-                  ),
-                DateOptions.y => _YearPicker(
-                    dateStreamController: _dateStreamController,
-                    initialDate: widget.initialDate,
-                    textStyle: widget.textStyle,
-                    borderRadius: widget.borderRadius,
-                    minYear: widget.minYear,
-                    maxYear: widget.maxYear,
-                  ),
-              },
-            )
-            .toList(),
-      ),
+                ),
+              )
+              .toList(),
+        ),
+      ],
     );
   }
 }
 
 ///Day date picker
 class _DayPicker extends StatelessWidget {
-  const _DayPicker({
+  _DayPicker({
     required this.dateStreamController,
     required this.initialDate,
     required this.textStyle,
@@ -232,8 +264,11 @@ class _DayPicker extends StatelessWidget {
   final DateTime initialDate;
   final TextStyle textStyle;
   final BorderRadius borderRadius;
-
-  // DaysOfWeek get daysOfWeek => DaysOfWeek.findByNumber(date.da);
+  final List<int> fullDayz = fullDays();
+  late final List<DropdownMenuItem<int>> dropDownDayItems = getItems(
+    items: fullDayz,
+    label: (e) => e.toString(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -248,9 +283,10 @@ class _DayPicker extends StatelessWidget {
           month: newDate.month,
         );
 
-        int lastDayOfMonth = noOfDays;
-
-        List<int> daysList = days(lastDayOfMonth: lastDayOfMonth);
+        List<DropdownMenuItem<int>> items = limitList(
+          size: noOfDays + 1,
+          originalList: dropDownDayItems,
+        );
 
         return DropdownButton<int>(
           // isExpanded: true,
@@ -270,7 +306,7 @@ class _DayPicker extends StatelessWidget {
               day: newDay,
             );
           },
-          items: getItems(items: daysList, label: (e) => e.toString()),
+          items: items,
         );
       },
     );
@@ -279,7 +315,7 @@ class _DayPicker extends StatelessWidget {
 
 ///Month date picker
 class _MonthPicker extends StatelessWidget {
-  const _MonthPicker({
+  _MonthPicker({
     required this.dateStreamController,
     required this.initialDate,
     required this.textStyle,
@@ -290,6 +326,11 @@ class _MonthPicker extends StatelessWidget {
   final DateTime initialDate;
   final TextStyle textStyle;
   final BorderRadius borderRadius;
+
+  final List<DropdownMenuItem<MonthsOfYear>> dropDownMothItems = getItems(
+    items: getAllMonths,
+    label: (e) => e.monthName,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -317,7 +358,7 @@ class _MonthPicker extends StatelessWidget {
               month: newMonth.number,
             );
           },
-          items: getItems(items: getAllMonths, label: (e) => e.name),
+          items: dropDownMothItems,
         );
       },
     );
@@ -345,6 +386,16 @@ class _YearPicker extends StatelessWidget {
   final TextStyle textStyle;
   final BorderRadius borderRadius;
 
+  late final List<int> yearItems = years(
+    minYear: minYear,
+    totalYears: totalYears(maxYear: maxYear, minYear: minYear),
+  );
+
+  late final List<DropdownMenuItem<int>> dropDownYearItems = getItems(
+    items: yearItems,
+    label: (e) => e.toString(),
+  );
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -371,13 +422,7 @@ class _YearPicker extends StatelessWidget {
               year: newYear,
             );
           },
-          items: getItems(
-            items: years(
-              minYear: minYear,
-              totalYears: totalYears(maxYear: maxYear, minYear: minYear),
-            ),
-            label: (e) => e.toString(),
-          ),
+          items: dropDownYearItems,
         );
       },
     );

@@ -51,11 +51,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text("${date.day} - ${date.month} - ${date.year}"),
                   SpinnerDatePicker(
                     initialDate: date,
-                    constraints: const BoxConstraints(
-                      minHeight: 400,
-                      minWidth: 400,
-                      maxHeight: 400,
-                      maxWidth: double.infinity,
+                    dayText: (s) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(s),
                     ),
                     dateOptions: const [
                       DateOptions.d,

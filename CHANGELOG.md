@@ -3,7 +3,10 @@
 * Added initial date parameter
 * Added date options list parameter
 * Added TextStyle parameter
-<<<<<<< HEAD
-=======
 * Added minYear and maxYear parameters
->>>>>>> origin/v.0.0.1
+
+## 0.0.2
+* Removed constraints from parameters
+* Capitalized month
+* Capitalize day
+* Added dayText parameter
