@@ -1,0 +1,27 @@
+name: spinner_date_picker
+description: A Spinner date picker
+version: 0.0.1
+repository: https://github.com/bruc3balo/spinner_date_picker.git
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  windows:
+  web:
+
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
