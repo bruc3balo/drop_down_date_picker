@@ -143,10 +143,12 @@ class DropDownDatePicker extends StatefulWidget {
   DropDownDatePicker({
     required this.constraints,
     required this.onDateChanged,
-    DateTime? initialDate,
     required this.dateOptions,
+    this.maxYear,
+    this.minYear,
     this.textStyle = itemStyle,
     this.borderRadius = itemBorderRadius,
+    DateTime? initialDate,
     super.key,
   }) : initialDate = initialDate ?? DateTime.now();
 
@@ -155,6 +157,8 @@ class DropDownDatePicker extends StatefulWidget {
   final DateTime initialDate;
   final TextStyle textStyle;
   final BorderRadius borderRadius;
+  final int? minYear;
+  final int? maxYear;
   final void Function(DateTime) onDateChanged;
 
   @override
@@ -203,6 +207,8 @@ class _DropDownDatePickerState extends State<DropDownDatePicker> {
                     initialDate: widget.initialDate,
                     textStyle: widget.textStyle,
                     borderRadius: widget.borderRadius,
+                    minYear: widget.minYear,
+                    maxYear: widget.maxYear,
                   ),
               },
             )
@@ -324,9 +330,10 @@ class _YearPicker extends StatelessWidget {
     required this.initialDate,
     required this.textStyle,
     required this.borderRadius,
-    this.minYear = 1800,
+    int? minYear,
     int? maxYear,
-  }) : maxYear = maxYear ?? DateTime.now().year;
+  })  : maxYear = maxYear ?? DateTime.now().year,
+        minYear = minYear ?? 1800;
 
   final int minYear;
   final int maxYear;
