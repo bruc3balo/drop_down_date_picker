@@ -139,8 +139,9 @@ void onChangeDate({
 }
 
 ///Actual date picker widget
-class DropDownDatePicker extends StatefulWidget {
-  DropDownDatePicker({
+
+class SpinnerDatePicker extends StatefulWidget {
+  SpinnerDatePicker({
     required this.constraints,
     required this.onDateChanged,
     required this.dateOptions,
@@ -162,10 +163,10 @@ class DropDownDatePicker extends StatefulWidget {
   final void Function(DateTime) onDateChanged;
 
   @override
-  State<DropDownDatePicker> createState() => _DropDownDatePickerState();
+  State<SpinnerDatePicker> createState() => _SpinnerDatePickerState();
 }
 
-class _DropDownDatePickerState extends State<DropDownDatePicker> {
+class _SpinnerDatePickerState extends State<SpinnerDatePicker> {
   late final StreamController<DateTime> _dateStreamController =
       StreamController.broadcast()..stream.listen(widget.onDateChanged);
 

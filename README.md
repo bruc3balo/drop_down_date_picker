@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ### Drop Down Date Picker
+=======
+### Spinner Date Picker
+>>>>>>> origin/v.0.0.1
 
 Allow quick setting of dates by choosing what date options you would like to set
 

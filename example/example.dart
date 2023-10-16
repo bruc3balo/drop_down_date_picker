@@ -1,4 +1,4 @@
-import 'package:drop_down_date_picker/date_picker/date_picker.dart';
+import 'package:spinner_date_picker/date_picker/date_picker.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 children: [
                   Text("${date.day} - ${date.month} - ${date.year}"),
-                  DropDownDatePicker(
+                  SpinnerDatePicker(
                     initialDate: date,
                     constraints: const BoxConstraints(
                       minHeight: 400,

@@ -1,7 +1,7 @@
-name: drop_down_date_picker
-description: A drop down date picker
+name: spinner_date_picker
+description: A Spinner date picker
 version: 0.0.1
-repository: https://github.com/bruc3balo/drop_down_date_picker.git
+repository: https://github.com/bruc3balo/spinner_date_picker.git
 
 platforms:
   android:
