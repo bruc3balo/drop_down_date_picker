@@ -1,5 +1,7 @@
 ### Spinner Date Picker
 
+![Illustration](https://github.com/bruc3balo/spinner_date_picker/blob/v0.0.1/assets/example.gif)
+
 Allow quick setting of dates by choosing what date options you would like to set
 
 ```dart
@@ -57,9 +59,7 @@ If left the initial date will be the current date
 
 ```
 
-* BoxConstrains have been set on the calendar to give it a fixed size as recommended.
-* The values can be initialized as **double.infinite** when you want an expanded view
-
 * The **dateOptions** parameter is used to order your date, such as a date format, and also choose what you'd like to be able to change
 
 * The **onDateChanged** function is a callback used to get the new date.
+
