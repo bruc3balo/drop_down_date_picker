@@ -1,0 +1,19 @@
+name: drop_down_date_picker
+description: A drop down date picker
+version: 0.0.1
+repository: https://github.com/bruc3balo/drop_down_date_picker.git
+
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
