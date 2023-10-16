@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+///Options to show on date picker
 enum DateOptions { d, m, y }
 
+///Days of the week mapped by their numbers
 enum DaysOfWeek {
   monday(number: 1),
   tuesday(number: 2),
@@ -22,6 +24,7 @@ enum DaysOfWeek {
   }
 }
 
+///Months mapped by their numbers
 enum MonthsOfYear {
   january(number: 1),
   february(number: 2),
@@ -45,17 +48,20 @@ enum MonthsOfYear {
   }
 }
 
+///Default itemStyle
 const itemStyle = TextStyle(
   letterSpacing: 0,
   color: Colors.black,
   fontWeight: FontWeight.bold,
 );
 
+///Default itemUnderline
 Container get itemUnderline => Container(
       height: 0,
       color: Colors.transparent,
     );
 
+///Default borderRadius
 const itemBorderRadius = BorderRadius.all(Radius.circular(20.0));
 
 /// Get the last day in a [year] and [month]
@@ -92,6 +98,7 @@ List<DropdownMenuItem<T>> getItems<T>({
         )
         .toList();
 
+///Generate range of from [minYear] upto [totalYears]
 List<int> years({
   required int totalYears,
   required int minYear,
@@ -101,9 +108,12 @@ List<int> years({
       (index) => index + minYear,
     );
 
+///Get The number of years in a range from [minYear] to [maxYear]
 int totalYears({required int maxYear, required int minYear}) =>
     maxYear - minYear + 1;
 
+///Callback for when any dropdown changes a date
+///Handling date conflicts
 void onChangeDate({
   required DateTime currentDate,
   required StreamController<DateTime> dateStreamController,
@@ -128,6 +138,7 @@ void onChangeDate({
   }
 }
 
+///Actual date picker widget
 class DropDownDatePicker extends StatefulWidget {
   DropDownDatePicker({
     required this.constraints,
@@ -201,13 +212,13 @@ class _DropDownDatePickerState extends State<DropDownDatePicker> {
   }
 }
 
+///Day date picker
 class _DayPicker extends StatelessWidget {
   const _DayPicker({
     required this.dateStreamController,
     required this.initialDate,
     required this.textStyle,
     required this.borderRadius,
-    super.key,
   });
 
   final StreamController<DateTime> dateStreamController;
@@ -259,13 +270,13 @@ class _DayPicker extends StatelessWidget {
   }
 }
 
+///Month date picker
 class _MonthPicker extends StatelessWidget {
   const _MonthPicker({
     required this.dateStreamController,
     required this.initialDate,
     required this.textStyle,
     required this.borderRadius,
-    super.key,
   });
 
   final StreamController<DateTime> dateStreamController;
@@ -306,6 +317,7 @@ class _MonthPicker extends StatelessWidget {
   }
 }
 
+///Year date picker
 class _YearPicker extends StatelessWidget {
   _YearPicker({
     required this.dateStreamController,
@@ -314,7 +326,6 @@ class _YearPicker extends StatelessWidget {
     required this.borderRadius,
     this.minYear = 1800,
     int? maxYear,
-    super.key,
   }) : maxYear = maxYear ?? DateTime.now().year;
 
   final int minYear;
